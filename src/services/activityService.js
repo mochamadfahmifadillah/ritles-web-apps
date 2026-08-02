@@ -1,78 +1,69 @@
-const API_URL = "http://localhost:5000/api/activity";
+import api from "../api/api";
 
-export async function createActivity(data, token) {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
 
-  if (!response.ok) {
-    throw new Error("Gagal menyimpan aktivitas");
-  }
+// ======================
+// Create Activity Note
+// ======================
 
-  return response.json();
+
+export async function createActivityNote(data) {
+
+
+  return await api.post(
+    "/activity-note",
+    data
+  );
+
+
 }
 
-export async function getActivities(token) {
-  const response = await fetch(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
-  if (!response.ok) {
-    throw new Error("Gagal mengambil data aktivitas");
-  }
 
-  return response.json();
+// ======================
+// Get Activity Notes
+// ======================
+
+
+export async function getActivityNotes() {
+
+
+  return await api.get(
+    "/activity-note"
+  );
+
+
 }
 
-export async function getActivityById(id, token) {
-  const response = await fetch(`${API_URL}/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
-  if (!response.ok) {
-    throw new Error("Data tidak ditemukan");
-  }
 
-  return response.json();
+// ======================
+// Get Activity Note By ID
+// ======================
+
+
+export async function getActivityNoteById(id) {
+
+
+  return await api.get(
+    `/activity-note/${id}`
+  );
+
+
 }
 
-export async function updateActivity(id, data, token) {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  });
 
-  if (!response.ok) {
-    throw new Error("Gagal memperbarui aktivitas");
-  }
 
-  return response.json();
-}
+// ======================
+// Delete Activity Note
+// ======================
 
-export async function deleteActivity(id, token) {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
-  if (!response.ok) {
-    throw new Error("Gagal menghapus aktivitas");
-  }
+export async function deleteActivityNote(id) {
 
-  return response.json();
+
+  return await api.delete(
+    `/activity-note/${id}`
+  );
+
+
 }

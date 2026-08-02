@@ -1,41 +1,85 @@
 import { motion } from "framer-motion";
-
-
 import {
- BarChart,
- Bar,
- XAxis,
- YAxis,
- CartesianGrid,
- Tooltip,
- Legend,
- ResponsiveContainer
+BarChart,
+Bar,
+XAxis,
+YAxis,
+Tooltip,
+ResponsiveContainer,
+CartesianGrid,
 } from "recharts";
 
 
-import { activityData } from "../../data/analysisData";
+
+export default function ActivityDistribution({
+data = [],
+}) {
 
 
-export default function ActivityDistribution(){
+
+const activityCount = {};
+
+
+
+// ======================
+// Hitung jumlah aktivitas
+// ======================
+
+
+data.forEach((item)=>{
+
+
+const title =
+item.title || "Lainnya";
+
+
+
+activityCount[title] =
+(activityCount[title] || 0) + 1;
+
+
+
+});
+
+
+
+
+// ======================
+// Format Chart Data
+// ======================
+
+
+const chartData =
+Object.keys(activityCount).map((key)=>({
+
+name:key,
+
+total:activityCount[key],
+
+}));
+
+
+
 
 
 return (
+
 
 <motion.div
 
 initial={{
 opacity:0,
-y:20
+y:20,
 }}
 
 animate={{
 opacity:1,
-y:0
+y:0,
 }}
 
 transition={{
 duration:.5,
-delay:.3
+delay:.3,
 }}
 
 className="
@@ -45,95 +89,91 @@ p-6
 border
 border-gray-200
 shadow-sm
+space-y-5
 "
 
 >
 
 
-<h3 className="font-semibold mb-4">
-Activity Distribution (Hours per Day)
+<h3 className="
+font-semibold
+">
+
+Activity Distribution
+
 </h3>
 
 
 
+
+{
+chartData.length === 0 ? (
+
+
+<p className="
+text-sm
+text-muted-foreground
+">
+
+Belum ada aktivitas.
+
+
+</p>
+
+
+
+) : (
+
+
 <ResponsiveContainer
+
 width="100%"
+
 height={300}
+
 >
 
 
-<BarChart data={activityData}>
+<BarChart
+
+data={chartData}
+
+>
 
 
 <CartesianGrid
+
 strokeDasharray="3 3"
+
 />
 
 
-<XAxis dataKey="day"/>
+
+<XAxis
+
+dataKey="name"
+
+/>
 
 
-<YAxis/>
+
+<YAxis />
 
 
-<Tooltip/>
 
-
-<Legend/>
+<Tooltip />
 
 
 
 <Bar
 
-dataKey="study"
-
-stackId="a"
+dataKey="total"
 
 fill="#6366F1"
 
-name="Study"
+radius={[8,8,0,0]}
 
-/>
-
-
-
-<Bar
-
-dataKey="organization"
-
-stackId="a"
-
-fill="#A78BFA"
-
-name="Organization"
-
-/>
-
-
-
-<Bar
-
-dataKey="rest"
-
-stackId="a"
-
-fill="#10B981"
-
-name="Rest"
-
-/>
-
-
-
-<Bar
-
-dataKey="development"
-
-stackId="a"
-
-fill="#F59E0B"
-
-name="Development"
+name="Jumlah Aktivitas"
 
 />
 
@@ -146,31 +186,38 @@ name="Development"
 
 
 
+)
 
-<div
-className="
-mt-4
+}
+
+
+
+
+
+<div className="
 p-4
-bg-yellow-50
+bg-indigo-50
 rounded-xl
 border
-border-yellow-200
+border-indigo-100
 text-sm
-text-yellow-800
-"
->
+text-indigo-800
+">
 
-⚠️
-Energi menurun ketika waktu belajar terlalu tinggi.
-Coba tambahkan jeda istirahat.
+
+Pantau keseimbangan aktivitas harian.
+Terlalu banyak aktivitas tanpa istirahat dapat meningkatkan risiko kelelahan.
+
 
 </div>
+
+
 
 
 </motion.div>
 
 
-)
+);
 
 
 }

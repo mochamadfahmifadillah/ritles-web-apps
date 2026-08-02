@@ -1,29 +1,62 @@
 import { motion } from "framer-motion";
 
 import {
-AreaChart,
-Area,
-XAxis,
-YAxis,
-CartesianGrid,
-Tooltip,
-ResponsiveContainer
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 
 
-import { moodData } from "../../data/analysisData";
+
+export default function MoodTrendChart({
+  data = [],
+}) {
 
 
-export default function MoodTrendChart(){
+
+const chartData = data.map((item,index)=>({
+
+  name: `Test ${index + 1}`,
+
+  score:
+    item.risk_level === "Tinggi"
+      ? 90
+      : item.risk_level === "Sedang"
+        ? 60
+        : 30,
+
+}));
+
+
+
 
 
 return (
 
+
 <motion.div
 
-initial={{opacity:0,y:20}}
 
-animate={{opacity:1,y:0}}
+initial={{
+opacity:0,
+y:20
+}}
+
+
+animate={{
+opacity:1,
+y:0
+}}
+
+
+transition={{
+duration:.5
+}}
+
 
 className="
 bg-white
@@ -32,31 +65,59 @@ p-6
 border
 "
 
+
 >
 
 
-<h3 className="font-semibold mb-4">
-Mood Trend (This Week)
+<h3 className="
+text-lg
+font-semibold
+mb-4
+">
+
+Risk Trend
+
 </h3>
 
 
 
-<ResponsiveContainer width="100%" height={250}>
+
+<div className="
+h-64
+">
 
 
-<AreaChart data={moodData}>
+<ResponsiveContainer
+width="100%"
+height="100%"
+>
 
 
-<CartesianGrid strokeDasharray="3 3"/>
+<AreaChart
+data={chartData}
+>
 
 
-<XAxis dataKey="day"/>
+<CartesianGrid
+strokeDasharray="3 3"
+/>
 
 
-<YAxis/>
+
+<XAxis
+dataKey="name"
+/>
 
 
-<Tooltip/>
+
+<YAxis
+domain={[0,100]}
+/>
+
+
+
+<Tooltip />
+
 
 
 <Area
@@ -74,29 +135,42 @@ fillOpacity={0.2}
 />
 
 
+
 </AreaChart>
 
 
 </ResponsiveContainer>
 
 
+</div>
 
-<div className="
+
+
+
+
+<p className="
 mt-4
-p-4
-bg-blue-50
-rounded-xl
+text-sm
+text-muted-foreground
 ">
 
-Mood menurun di pertengahan minggu.
-Pertimbangkan menambah waktu istirahat.
 
-</div>
+{chartData.length > 0
+
+? "Pantau perubahan tingkat risiko kelelahan dari setiap assessment."
+
+: "Belum ada data assessment."
+}
+
+
+</p>
 
 
 
 </motion.div>
 
-)
+
+);
+
 
 }

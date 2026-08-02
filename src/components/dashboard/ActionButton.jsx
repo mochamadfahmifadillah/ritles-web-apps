@@ -32,37 +32,32 @@ delay:.6
 to="/activityNote"
 
 className="
-block
+flex
+items-center
+justify-center
+gap-3
 w-full
 bg-primary
 text-white
 rounded-xl
 py-4
-text-center
+font-medium
 hover:bg-primary/90
 transition-colors
+shadow-sm
 "
 
 >
 
-
-<div className="
-flex
-items-center
-justify-center
-gap-2
-">
-
-
-<TrendingUp className="w-5 h-5"/>
+<TrendingUp
+className="
+w-5
+h-5
+"
+/>
 
 
-<span>
-Catat Aktivitas Hari Ini
-</span>
-
-
-</div>
+Mulai Catat Aktivitas
 
 
 </Link>
@@ -70,6 +65,6 @@ Catat Aktivitas Hari Ini
 
 </motion.div>
 
-)
+);
 
 }

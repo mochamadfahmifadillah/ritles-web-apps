@@ -1,95 +1,246 @@
 import { motion } from "framer-motion";
 
 
-export default function ScoreCard() {
-
-const score = 72;
-
-
-return (
-
-<motion.div
-initial={{opacity:0,y:20}}
-animate={{opacity:1,y:0}}
-transition={{
-duration:.5,
-delay:.2
-}}
-className="bg-white rounded-2xl p-6 border"
->
+export default function ScoreCard({
+  prediction,
+}) {
 
 
-<h3 className="mb-4">
-Skor Keseimbangan Hari Ini
-</h3>
+  const score =
+    prediction?.fatigue_score || 0;
 
 
 
-<div className="flex justify-center mb-4">
+  const radius = 70;
 
-<div className="relative w-40 h-40">
-
-
-<svg className="transform -rotate-90 w-40 h-40">
-
-
-<circle
-cx="80"
-cy="80"
-r="70"
-stroke="currentColor"
-strokeWidth="12"
-fill="transparent"
-className="text-muted"
-/>
+  const circumference =
+    2 * Math.PI * radius;
 
 
 
-<circle
-cx="80"
-cy="80"
-r="70"
-stroke="currentColor"
-strokeWidth="12"
-fill="transparent"
-strokeDasharray={`${2*Math.PI*70}`}
-strokeDashoffset={
-2*Math.PI*70*(1-score/100)
-}
-className="text-primary"
-strokeLinecap="round"
-/>
+  const offset =
+    circumference * (1 - score / 100);
 
 
-</svg>
 
 
-<div className="absolute inset-0 flex flex-col items-center justify-center">
-
-<span className="text-4xl text-primary">
-{score}
-</span>
-
-<span className="text-sm text-muted-foreground">
-dari 100
-</span>
-
-</div>
+  const getStatus = () => {
 
 
-</div>
-
-</div>
-
-
-<p className="text-center text-sm text-muted-foreground">
-Keseimbangan yang baik!
-Tetap jaga pola aktivitasmu.
-</p>
+    if(score >= 80){
+      return "Tinggi";
+    }
 
 
-</motion.div>
+    if(score >= 50){
+      return "Sedang";
+    }
 
-)
+
+    return "Rendah";
+
+  };
+
+
+
+  return (
+
+
+    <motion.div
+
+
+      initial={{
+        opacity:0,
+        y:20,
+      }}
+
+
+      animate={{
+        opacity:1,
+        y:0,
+      }}
+
+
+      transition={{
+        duration:.5,
+        delay:.2,
+      }}
+
+
+      className="
+      bg-white
+      rounded-2xl
+      p-6
+      border
+      flex
+      flex-col
+      items-center
+      "
+
+    >
+
+
+
+      <h3 className="
+      text-lg
+      font-semibold
+      mb-5
+      self-start
+      ">
+
+        Fatigue Score
+
+      </h3>
+
+
+
+
+      <div className="
+      relative
+      w-[160px]
+      h-[160px]
+      ">
+
+
+
+        <svg
+
+          width="160"
+
+          height="160"
+
+          viewBox="0 0 160 160"
+
+          className="-rotate-90"
+
+        >
+
+
+
+          <circle
+
+            cx="80"
+
+            cy="80"
+
+            r={radius}
+
+            stroke="currentColor"
+
+            strokeWidth="12"
+
+            fill="transparent"
+
+            className="text-gray-200"
+
+          />
+
+
+
+
+
+          <circle
+
+            cx="80"
+
+            cy="80"
+
+            r={radius}
+
+            stroke="currentColor"
+
+            strokeWidth="12"
+
+            fill="transparent"
+
+            strokeDasharray={circumference}
+
+            strokeDashoffset={offset}
+
+            className="text-primary"
+
+            strokeLinecap="round"
+
+          />
+
+
+
+        </svg>
+
+
+
+
+        <div className="
+        absolute
+        inset-0
+        flex
+        flex-col
+        items-center
+        justify-center
+        ">
+
+
+          <span className="
+          text-4xl
+          font-bold
+          ">
+
+            {score}
+
+          </span>
+
+
+          <span className="
+          text-xs
+          text-muted-foreground
+          ">
+
+            /100
+
+          </span>
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+
+      <p className="
+      mt-5
+      text-sm
+      text-muted-foreground
+      ">
+
+        Tingkat kelelahan saat ini
+
+      </p>
+
+
+
+      <span className="
+      mt-2
+      px-4
+      py-1
+      rounded-full
+      bg-primary/10
+      text-primary
+      text-sm
+      font-medium
+      ">
+
+        {getStatus()}
+
+      </span>
+
+
+
+    </motion.div>
+
+
+  );
 
 }

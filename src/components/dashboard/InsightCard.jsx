@@ -1,15 +1,43 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
-export default function InsightCard() {
+
+export default function InsightCard({
+  recommendation,
+}) {
+
+
+  const message =
+    recommendation?.message ||
+    "Belum ada rekomendasi tersedia.";
+
+
+
+
   return (
+
+
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+
+
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+
+
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+
+
       transition={{
         duration: 0.5,
         delay: 0.1,
       }}
+
+
       className="
       bg-gradient-to-br
       from-indigo-50
@@ -18,30 +46,75 @@ export default function InsightCard() {
       p-6
       border
       border-indigo-100
+      flex
+      gap-4
+      items-start
       "
+
+
     >
-      <div className="flex items-start gap-4">
-
-        <div className="bg-white rounded-full p-3">
-          <Sparkles className="w-6 h-6 text-primary" />
-        </div>
 
 
-        <div>
-          <h3 className="mb-2 text-primary">
-            Insight AI untuk Kamu
-          </h3>
+      <div
+        className="
+        bg-white
+        rounded-full
+        p-3
+        shadow-sm
+        "
+      >
 
-          <p>
-            Aktivitas kamu cukup padat akhir-akhir ini.
-            Ada tanda awal kelelahan.
-            Yuk luangkan waktu untuk istirahat
-            dan kegiatan yang menyenangkan.
-          </p>
-        </div>
+        <Sparkles
+          className="
+          w-6
+          h-6
+          text-primary
+          "
+        />
 
       </div>
 
+
+
+
+      <div>
+
+
+        <h3
+          className="
+          mb-2
+          text-primary
+          font-semibold
+          "
+        >
+
+          Insight AI untuk Kamu
+
+        </h3>
+
+
+
+        <p
+          className="
+          text-sm
+          text-muted-foreground
+          leading-relaxed
+          "
+        >
+
+          {message}
+
+        </p>
+
+
+      </div>
+
+
+
     </motion.div>
+
+
   );
+
+
 }

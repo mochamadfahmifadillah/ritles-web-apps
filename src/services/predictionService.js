@@ -1,21 +1,31 @@
-import api from "./api";
+import api from "../api/api";
+
 
 // ============================
 // Prediksi Mental Fatigue
 // ============================
 
-export async function predictMentalFatigue(data) {
-  const response = await api.post("/prediction", data);
 
-  return response.data;
+export async function predictMentalFatigue(data) {
+
+  return await api.post(
+    "/assessment/predict",
+    data
+  );
+
 }
+
+
 
 // ============================
 // Riwayat Prediksi
 // ============================
 
-export async function getPredictionHistory() {
-  const response = await api.get("/prediction/history");
 
-  return response.data;
+export async function getPredictionHistory() {
+
+  return await api.get(
+    "/prediction/history"
+  );
+
 }

@@ -1,124 +1,228 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createActivityNote } from "../services/activityService";
 
 
 export default function useActivityNote() {
 
-  const navigate = useNavigate();
+
+const navigate = useNavigate();
 
 
-  // Mood user
-  const [mood, setMood] = useState("");
+// ======================
+// Mood User
+// ======================
 
-
-  // Energy level (0-100)
-  const [energy, setEnergy] = useState(50);
-
-
-  // Aktivitas yang dipilih
-  const [selectedActivities, setSelectedActivities] = useState([]);
-
-
-  // Durasi setiap aktivitas
-  const [durations, setDurations] = useState({
-    belajar: 0,
-    organisasi: 0,
-    istirahat: 0,
-    pengembangan: 0,
-  });
+const [mood, setMood] = useState("");
 
 
 
-  // Pilih / hapus aktivitas
-  const toggleActivity = (activityId) => {
+// ======================
+// Energy Level
+// ======================
 
-    setSelectedActivities((prev) => {
-
-      if (prev.includes(activityId)) {
-
-        return prev.filter(
-          (id) => id !== activityId
-        );
-
-      }
-
-
-      return [
-        ...prev,
-        activityId
-      ];
-
-    });
-
-  };
+const [energy, setEnergy] = useState(50);
 
 
 
-  // Simpan catatan aktivitas
-  const handleSubmit = () => {
+// ======================
+// Selected Activities
+// ======================
 
-
-    const activityData = {
-
-      mood,
-
-      energy,
-
-      activities: selectedActivities,
-
-      durations,
-
-      createdAt: new Date(),
-
-    };
-
-
-    console.log(
-      "Activity Data:",
-      activityData
-    );
-
-
-    /*
-      Nanti ganti dengan API:
-
-      await api.post(
-        "/activities",
-        activityData
-      );
-
-    */
-
-
-    navigate("/");
-
-  };
+const [selectedActivities, setSelectedActivities] = useState([]);
 
 
 
-  return {
+// ======================
+// Duration
+// ======================
 
-    mood,
-    setMood,
+const [durations, setDurations] = useState({
 
+belajar: 0,
 
-    energy,
-    setEnergy,
+organisasi: 0,
 
+istirahat: 0,
 
-    selectedActivities,
-    toggleActivity,
+pengembangan: 0,
 
-
-    durations,
-    setDurations,
-
-
-    handleSubmit,
+});
 
 
-    navigate,
 
-  };
+const [loading, setLoading] = useState(false);
+
+
+
+
+// ======================
+// Toggle Activity
+// ======================
+
+const toggleActivity = (activityId)=>{
+
+
+setSelectedActivities((prev)=>{
+
+
+if(prev.includes(activityId)){
+
+
+return prev.filter(
+(id)=>id !== activityId
+);
+
+
+}
+
+
+return [
+...prev,
+activityId
+];
+
+
+});
+
+
+};
+
+
+
+
+
+// ======================
+// Submit Activity
+// ======================
+
+const handleSubmit = async ()=>{
+
+
+try{
+
+
+setLoading(true);
+
+
+
+// Judul aktivitas
+
+const title =
+selectedActivities.join(", ");
+
+
+
+
+// Isi catatan
+
+const note = `
+Mood: ${mood}
+
+Energy: ${energy}
+
+Aktivitas:
+
+${selectedActivities
+.map(
+(activity)=> 
+`${activity}: ${durations[activity] || 0} jam`
+)
+.join("\n")}
+
+`;
+
+
+
+
+
+await createActivityNote({
+
+title,
+
+note,
+
+});
+
+
+
+
+// kembali dashboard
+
+navigate("/", {
+replace:true
+});
+
+
+
+}
+
+
+catch(error){
+
+
+console.error(
+"Activity Note Error:",
+error
+);
+
+
+alert(
+"Gagal menyimpan aktivitas"
+);
+
+
+}
+
+
+finally{
+
+
+setLoading(false);
+
+
+}
+
+
+
+};
+
+
+
+
+return {
+
+
+mood,
+
+setMood,
+
+
+energy,
+
+setEnergy,
+
+
+selectedActivities,
+
+toggleActivity,
+
+
+durations,
+
+setDurations,
+
+
+handleSubmit,
+
+
+navigate,
+
+
+loading,
+
+
+};
+
 
 }
