@@ -11,18 +11,15 @@ export async function loginUser(data) {
 
     const formData = new URLSearchParams();
 
-
     formData.append(
       "username",
       data.email
     );
 
-
     formData.append(
       "password",
       data.password
     );
-
 
     console.log("==================");
     console.log("LOGIN PAYLOAD");
@@ -31,8 +28,6 @@ export async function loginUser(data) {
       password: data.password,
     });
     console.log("==================");
-
-
 
     const response = await api.post(
       "/auth/login",
@@ -45,27 +40,19 @@ export async function loginUser(data) {
       }
     );
 
-
-
     console.log("==================");
     console.log("BACKEND RESPONSE");
     console.log(response.data);
     console.log("==================");
 
-
-
     const tokenData = response.data;
 
-
-
     if (tokenData.access_token) {
-
 
       localStorage.setItem(
         "access_token",
         tokenData.access_token
       );
-
 
       localStorage.setItem(
         "user",
@@ -74,10 +61,7 @@ export async function loginUser(data) {
         )
       );
 
-
     }
-
-
 
     return {
 
@@ -87,35 +71,27 @@ export async function loginUser(data) {
 
     };
 
-
-
   } catch (error) {
-
 
     console.log("==================");
     console.log("AUTH SERVICE ERROR");
-    console.log(
-      error.response?.data
-    );
+    console.log(error.response?.data);
     console.log(error.message);
     console.log("==================");
-
 
     return {
 
       success: false,
 
       message:
-        error.response?.data?.detail ||
+        error.response?.data?.detail ??
         "Login gagal",
 
     };
 
-
   }
 
 }
-
 
 
 
@@ -125,17 +101,14 @@ export async function loginUser(data) {
 
 export async function registerUser(data) {
 
-
   const response = await api.post(
     "/auth/register",
     data
   );
 
-
   return response.data;
 
 }
-
 
 
 
@@ -145,17 +118,13 @@ export async function registerUser(data) {
 
 export async function getProfile() {
 
-
   const response = await api.get(
     "/auth/me"
   );
 
-
   return response.data;
 
-
 }
-
 
 
 
@@ -165,20 +134,16 @@ export async function getProfile() {
 
 export async function logoutUser() {
 
-
   await api.post(
     "/auth/logout"
   );
-
 
   localStorage.removeItem(
     "access_token"
   );
 
-
   localStorage.removeItem(
     "user"
   );
-
 
 }

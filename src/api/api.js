@@ -1,11 +1,10 @@
 import axios from "axios";
 
-
 const api = axios.create({
 
   baseURL:
     import.meta.env.VITE_API_URL ||
-    // "https://backend-ritles-gl7b.vercel.app",
+     // "https://backend-ritles-gl7b.vercel.app",
     // "http://127.0.0.1:8000",
     "https://backend-ritles-change.vercel.app",
 
@@ -26,12 +25,15 @@ api.interceptors.request.use(
 
   (config) => {
 
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem(
+      "access_token"
+    );
 
 
     if (token) {
 
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization =
+        `Bearer ${token}`;
 
     }
 
@@ -59,7 +61,6 @@ api.interceptors.request.use(
       error
     );
 
-
     return Promise.reject(error);
 
   }
@@ -76,24 +77,23 @@ api.interceptors.response.use(
 
   (response) => {
 
-
     console.log(
       "RESPONSE:",
       response.data
     );
 
-
-    return response.data;
+    // Kembalikan response Axios utuh
+    return response;
 
   },
 
 
   (error) => {
 
-
     console.error(
       "API ERROR:",
       {
+
         status: error.response?.status,
 
         data: error.response?.data,
@@ -106,16 +106,13 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401) {
 
-
       localStorage.removeItem(
         "access_token"
       );
 
-
       localStorage.removeItem(
         "user"
       );
-
 
       if (
         window.location.pathname !== "/login"
@@ -129,12 +126,10 @@ api.interceptors.response.use(
 
     }
 
-
     return Promise.reject(error);
 
   }
 
 );
-
 
 export default api;
