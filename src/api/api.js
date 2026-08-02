@@ -2,17 +2,17 @@ import axios from "axios";
 
 const api = axios.create({
 
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-     // "https://backend-ritles-gl7b.vercel.app",
-    // "http://127.0.0.1:8000",
-    "https://backend-ritles-change.vercel.app",
+baseURL:
+import.meta.env.VITE_API_URL ||
+// "https://backend-ritles-gl7b.vercel.app",
+// "http://127.0.0.1:8000",
+"https://backend-ritles-change.vercel.app",
 
-  timeout: 10000,
+timeout: 10000,
 
-  headers: {
-    "Content-Type": "application/json",
-  },
+headers: {
+"Content-Type": "application/json",
+},
 
 });
 
@@ -23,47 +23,56 @@ const api = axios.create({
 
 api.interceptors.request.use(
 
-  (config) => {
-
-    const token = localStorage.getItem(
-      "access_token"
-    );
+(config) => {
 
 
-    if (token) {
-
-      config.headers.Authorization =
-        `Bearer ${token}`;
-
-    }
+const token = localStorage.getItem(
+  "access_token"
+);
 
 
-    console.log("REQUEST:", {
 
-      method: config.method,
+if (token) {
 
-      url: `${config.baseURL}${config.url}`,
+  config.headers.Authorization =
+  `Bearer ${token}`;
 
-      data: config.data,
-
-    });
+}
 
 
-    return config;
 
-  },
+console.log("REQUEST:", {
+
+  method: config.method,
+
+  url:
+  `${config.baseURL}${config.url}`,
+
+  data: config.data,
+
+});
 
 
-  (error) => {
 
-    console.error(
-      "REQUEST ERROR:",
-      error
-    );
+return config;
 
-    return Promise.reject(error);
 
-  }
+},
+
+(error) => {
+
+
+console.error(
+  "REQUEST ERROR:",
+  error
+);
+
+
+
+return Promise.reject(error);
+
+
+}
 
 );
 
@@ -75,61 +84,95 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
 
-  (response) => {
-
-    console.log(
-      "RESPONSE:",
-      response.data
-    );
-
-    // Kembalikan response Axios utuh
-    return response;
-
-  },
+(response) => {
 
 
-  (error) => {
-
-    console.error(
-      "API ERROR:",
-      {
-
-        status: error.response?.status,
-
-        data: error.response?.data,
-
-        message: error.message,
-
-      }
-    );
+console.log(
+  "RESPONSE:",
+  response.data
+);
 
 
-    if (error.response?.status === 401) {
+// PENTING:
+// return response asli
+// supaya service bisa pakai response.data
 
-      localStorage.removeItem(
-        "access_token"
-      );
+return response;
 
-      localStorage.removeItem(
-        "user"
-      );
 
-      if (
-        window.location.pathname !== "/login"
-      ) {
+},
 
-        window.location.replace(
-          "/login"
-        );
 
-      }
+(error) => {
 
-    }
 
-    return Promise.reject(error);
+console.error(
+
+  "API ERROR:",
+
+  {
+
+    status:
+    error.response?.status,
+
+
+    data:
+    error.response?.data,
+
+
+    message:
+    error.message,
+
 
   }
 
 );
+
+
+
+if (
+  error.response?.status === 401
+) {
+
+
+
+  localStorage.removeItem(
+    "access_token"
+  );
+
+
+
+  localStorage.removeItem(
+    "user"
+  );
+
+
+
+
+  if (
+    window.location.pathname !== "/login"
+  ) {
+
+
+    window.location.replace(
+      "/login"
+    );
+
+
+  }
+
+
+}
+
+
+
+return Promise.reject(error);
+
+
+}
+
+);
+
+
 
 export default api;
