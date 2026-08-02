@@ -11,10 +11,12 @@ export async function loginUser(data) {
 
     const formData = new URLSearchParams();
 
+
     formData.append(
       "username",
       data.email
     );
+
 
     formData.append(
       "password",
@@ -31,27 +33,33 @@ export async function loginUser(data) {
     console.log("==================");
 
 
+
     const response = await api.post(
       "/auth/login",
       formData,
       {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type":
+            "application/x-www-form-urlencoded",
         },
       }
     );
 
 
+
     console.log("==================");
-    console.log("LOGIN RESPONSE");
+    console.log("BACKEND RESPONSE");
     console.log(response.data);
     console.log("==================");
+
 
 
     const tokenData = response.data;
 
 
+
     if (tokenData.access_token) {
+
 
       localStorage.setItem(
         "access_token",
@@ -61,39 +69,53 @@ export async function loginUser(data) {
 
       localStorage.setItem(
         "user",
-        JSON.stringify(tokenData)
+        JSON.stringify(
+          tokenData.user
+        )
       );
+
 
     }
 
 
+
     return {
+
       success: true,
+
       data: tokenData,
+
     };
+
 
 
   } catch (error) {
 
 
     console.log("==================");
-    console.log("LOGIN ERROR");
-    console.log("STATUS:", error.response?.status);
-    console.log("DATA:", error.response?.data);
-    console.log("MESSAGE:", error.message);
+    console.log("AUTH SERVICE ERROR");
+    console.log(
+      error.response?.data
+    );
+    console.log(error.message);
     console.log("==================");
 
 
     return {
+
       success: false,
+
       message:
         error.response?.data?.detail ||
         "Login gagal",
+
     };
+
 
   }
 
 }
+
 
 
 
@@ -103,70 +125,37 @@ export async function loginUser(data) {
 
 export async function registerUser(data) {
 
-  try {
 
-    const response = await api.post(
-      "/auth/register",
-      data
-    );
-
-
-    return {
-      success: true,
-      data: response.data,
-    };
+  const response = await api.post(
+    "/auth/register",
+    data
+  );
 
 
-  } catch (error) {
-
-
-    console.log("==================");
-    console.log("REGISTER ERROR");
-    console.log(error.response?.data);
-    console.log("==================");
-
-
-    return {
-      success: false,
-      message:
-        error.response?.data?.detail ||
-        "Register gagal",
-    };
-
-  }
+  return response.data;
 
 }
 
 
 
+
 // ======================
-// Get Current User
+// Profile
 // ======================
 
 export async function getProfile() {
 
-  try {
 
-    const response = await api.get(
-      "/auth/me"
-    );
-
-
-    return response.data;
+  const response = await api.get(
+    "/auth/me"
+  );
 
 
-  } catch (error) {
+  return response.data;
 
-    console.log(
-      "PROFILE ERROR",
-      error
-    );
-
-    throw error;
-
-  }
 
 }
+
 
 
 
@@ -176,33 +165,20 @@ export async function getProfile() {
 
 export async function logoutUser() {
 
-  try {
 
-    await api.post(
-      "/auth/logout"
-    );
-
-
-  } catch (error) {
-
-    console.warn(
-      "Logout API gagal:",
-      error
-    );
+  await api.post(
+    "/auth/logout"
+  );
 
 
-  } finally {
+  localStorage.removeItem(
+    "access_token"
+  );
 
 
-    localStorage.removeItem(
-      "access_token"
-    );
+  localStorage.removeItem(
+    "user"
+  );
 
-
-    localStorage.removeItem(
-      "user"
-    );
-
-  }
 
 }
