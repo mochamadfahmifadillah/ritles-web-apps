@@ -41,13 +41,23 @@ export async function loginUser(data) {
     );
 
     console.log("==================");
+    console.log("AXIOS RESPONSE");
+    console.log(response);
+    console.log("==================");
+
+    console.log("==================");
     console.log("BACKEND RESPONSE");
     console.log(response.data);
     console.log("==================");
 
     const tokenData = response.data;
 
-    if (tokenData.access_token) {
+    console.log("==================");
+    console.log("TOKEN DATA");
+    console.log(tokenData);
+    console.log("==================");
+
+    if (tokenData?.access_token) {
 
       localStorage.setItem(
         "access_token",
@@ -63,7 +73,7 @@ export async function loginUser(data) {
 
     }
 
-    return {
+    const result = {
 
       success: true,
 
@@ -71,12 +81,21 @@ export async function loginUser(data) {
 
     };
 
+    console.log("==================");
+    console.log("LOGIN USER RETURN");
+    console.log(result);
+    console.log("==================");
+
+    return result;
+
   } catch (error) {
 
     console.log("==================");
     console.log("AUTH SERVICE ERROR");
-    console.log(error.response?.data);
-    console.log(error.message);
+    console.log("STATUS :", error.response?.status);
+    console.log("DATA   :", error.response?.data);
+    console.log("MESSAGE:", error.message);
+    console.log(error);
     console.log("==================");
 
     return {
@@ -85,6 +104,7 @@ export async function loginUser(data) {
 
       message:
         error.response?.data?.detail ??
+        error.message ??
         "Login gagal",
 
     };
