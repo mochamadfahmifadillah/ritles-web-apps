@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const api = axios.create({
-
 baseURL:
 import.meta.env.VITE_API_URL ||
 // "https://backend-ritles-gl7b.vercel.app",
@@ -13,29 +12,24 @@ timeout: 10000,
 headers: {
 "Content-Type": "application/json",
 },
-
 });
 
 
 // =====================================
 // Request Interceptor
 // =====================================
-
 api.interceptors.request.use(
-
 (config) => {
 
-
 const token = localStorage.getItem(
-  "access_token"
+"access_token"
 );
-
 
 
 if (token) {
 
-  config.headers.Authorization =
-  `Bearer ${token}`;
+config.headers.Authorization =
+`Bearer ${token}`;
 
 }
 
@@ -43,12 +37,12 @@ if (token) {
 
 console.log("REQUEST:", {
 
-  method: config.method,
+method: config.method,
 
-  url:
-  `${config.baseURL}${config.url}`,
+url:
+`${config.baseURL}${config.url}`,
 
-  data: config.data,
+data: config.data,
 
 });
 
@@ -56,21 +50,16 @@ console.log("REQUEST:", {
 
 return config;
 
-
 },
-
 (error) => {
 
-
 console.error(
-  "REQUEST ERROR:",
-  error
+"REQUEST ERROR:",
+error
 );
 
 
-
 return Promise.reject(error);
-
 
 }
 
@@ -81,15 +70,13 @@ return Promise.reject(error);
 // =====================================
 // Response Interceptor
 // =====================================
-
 api.interceptors.response.use(
 
 (response) => {
 
-
 console.log(
-  "RESPONSE:",
-  response.data
+"RESPONSE:",
+response.data
 );
 
 
@@ -99,68 +86,57 @@ console.log(
 
 return response;
 
-
 },
-
 
 (error) => {
 
 
 console.error(
+"API ERROR:",
+{
 
-  "API ERROR:",
-
-  {
-
-    status:
-    error.response?.status,
+status:
+error.response?.status,
 
 
-    data:
-    error.response?.data,
+data:
+error.response?.data,
 
 
-    message:
-    error.message,
+message:
+error.message,
 
-
-  }
+}
 
 );
 
 
 
 if (
-  error.response?.status === 401
+error.response?.status === 401
 ) {
 
 
-
-  localStorage.removeItem(
-    "access_token"
-  );
-
+localStorage.removeItem(
+"access_token"
+);
 
 
-  localStorage.removeItem(
-    "user"
-  );
+localStorage.removeItem(
+"user"
+);
 
 
 
+if (
+window.location.pathname !== "/login"
+) {
 
-  if (
-    window.location.pathname !== "/login"
-  ) {
+window.location.replace(
+"/login"
+);
 
-
-    window.location.replace(
-      "/login"
-    );
-
-
-  }
-
+}
 
 }
 
@@ -168,11 +144,9 @@ if (
 
 return Promise.reject(error);
 
-
 }
 
 );
-
 
 
 export default api;

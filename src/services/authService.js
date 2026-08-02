@@ -10,34 +10,45 @@ const formData = new URLSearchParams();
 
 
 formData.append(
-"username",
-data.email
+  "username",
+  data.email
 );
 
 
 formData.append(
-"password",
-data.password
+  "password",
+  data.password
 );
 
 
 
-const tokenData = await api.post(
-"/auth/login",
-formData,
-{
-headers:{
-"Content-Type":
-"application/x-www-form-urlencoded",
-},
-}
+const response = await api.post(
+  "/auth/login",
+  formData,
+  {
+    headers:{
+      "Content-Type":
+      "application/x-www-form-urlencoded",
+    },
+  }
 );
 
 
 
 console.log(
-"LOGIN RESPONSE:",
-tokenData
+  "LOGIN AXIOS RESPONSE:",
+  response
+);
+
+
+
+const tokenData = response.data;
+
+
+
+console.log(
+  "LOGIN DATA:",
+  tokenData
 );
 
 
@@ -94,15 +105,13 @@ data:tokenData
 };
 
 
-
 }
-
 catch(error){
 
 
 console.error(
 "LOGIN ERROR:",
-error
+error.response?.data || error.message
 );
 
 
