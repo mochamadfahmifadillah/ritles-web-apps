@@ -2,7 +2,8 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    import.meta.env.VITE_API_URL || "http://localhost:8000",
+    import.meta.env.VITE_API_URL ||
+    "https://backend-ritles-4o9y-pi.vercel.app",
 
   timeout: 10000,
 
