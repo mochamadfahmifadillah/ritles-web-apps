@@ -1,32 +1,38 @@
 import axios from "axios";
 
 const api = axios.create({
+
 baseURL:
 import.meta.env.VITE_API_URL ||
 // "https://backend-ritles-gl7b.vercel.app",
 // "http://127.0.0.1:8000",
 "https://backend-ritles-change.vercel.app",
 
-timeout: 10000,
+timeout:10000,
 
-headers: {
-"Content-Type": "application/json",
+headers:{
+"Content-Type":"application/json",
 },
+
 });
 
 
 // =====================================
 // Request Interceptor
 // =====================================
+
 api.interceptors.request.use(
-(config) => {
+
+(config)=>{
+
 
 const token = localStorage.getItem(
 "access_token"
 );
 
 
-if (token) {
+
+if(token){
 
 config.headers.Authorization =
 `Bearer ${token}`;
@@ -35,23 +41,32 @@ config.headers.Authorization =
 
 
 
-console.log("REQUEST:", {
+console.log(
+"REQUEST:",
+{
 
-method: config.method,
+method:
+config.method,
 
 url:
 `${config.baseURL}${config.url}`,
 
-data: config.data,
+data:
+config.data,
 
-});
+}
+
+);
 
 
 
 return config;
 
+
 },
-(error) => {
+
+
+(error)=>{
 
 console.error(
 "REQUEST ERROR:",
@@ -70,9 +85,12 @@ return Promise.reject(error);
 // =====================================
 // Response Interceptor
 // =====================================
+
 api.interceptors.response.use(
 
-(response) => {
+
+(response)=>{
+
 
 console.log(
 "RESPONSE:",
@@ -86,13 +104,17 @@ response.data
 
 return response;
 
+
 },
 
-(error) => {
+
+(error)=>{
 
 
 console.error(
+
 "API ERROR:",
+
 {
 
 status:
@@ -112,9 +134,9 @@ error.message,
 
 
 
-if (
+if(
 error.response?.status === 401
-) {
+){
 
 
 localStorage.removeItem(
@@ -128,9 +150,9 @@ localStorage.removeItem(
 
 
 
-if (
+if(
 window.location.pathname !== "/login"
-) {
+){
 
 window.location.replace(
 "/login"
@@ -138,15 +160,18 @@ window.location.replace(
 
 }
 
+
 }
 
 
 
 return Promise.reject(error);
 
+
 }
 
 );
+
 
 
 export default api;
