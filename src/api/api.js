@@ -7,7 +7,7 @@ const api = axios.create({
     import.meta.env.VITE_API_URL ||
     // "https://backend-ritles-gl7b.vercel.app",
     // "http://127.0.0.1:8000",
-    "https://backend-ritles-change.vercel.app/",
+    "https://backend-ritles-change.vercel.app",
 
   timeout: 10000,
 
