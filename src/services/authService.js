@@ -10,39 +10,34 @@ const formData = new URLSearchParams();
 
 
 formData.append(
-  "username",
-  data.email
+"username",
+data.email
 );
 
 
 formData.append(
-  "password",
-  data.password
+"password",
+data.password
 );
 
 
 
-const response = await api.post(
-  "/auth/login",
-  formData,
-  {
-    headers:{
-      "Content-Type":
-      "application/x-www-form-urlencoded",
-    },
-  }
+const tokenData = await api.post(
+"/auth/login",
+formData,
+{
+headers:{
+"Content-Type":
+"application/x-www-form-urlencoded",
+},
+}
 );
-
-
-
-// Karena interceptor sudah return response.data
-const tokenData = response;
 
 
 
 console.log(
-  "LOGIN RESPONSE:",
-  tokenData
+"LOGIN RESPONSE:",
+tokenData
 );
 
 
@@ -50,21 +45,17 @@ console.log(
 // ======================
 // Validasi Token
 // ======================
+
 if(!tokenData?.access_token){
 
+return {
 
-  return {
+success:false,
 
+message:
+"Token tidak ditemukan"
 
-    success:false,
-
-
-    message:
-    "Email atau password salah"
-
-
-  };
-
+};
 
 }
 
@@ -73,67 +64,60 @@ if(!tokenData?.access_token){
 // ======================
 // Simpan Session
 // ======================
+
 localStorage.setItem(
-  "access_token",
-  tokenData.access_token
+"access_token",
+tokenData.access_token
 );
 
 
 
 localStorage.setItem(
-  "user",
-  JSON.stringify(
-    tokenData.user || {}
-  )
+"user",
+JSON.stringify(
+tokenData.user
+)
 );
 
 
 
 // ======================
-// Return Success
+// Return
 // ======================
+
 return {
 
+success:true,
 
- success:true,
-
-
- data:tokenData,
-
+data:tokenData
 
 };
 
 
 
-
-
 }
+
 catch(error){
 
 
 console.error(
 "LOGIN ERROR:",
-error.response?.data || error.message
+error
 );
 
 
 
 return {
 
+success:false,
 
- success:false,
-
-
- message:
- error.response?.data?.detail ||
- "Login gagal"
-
+message:
+error.response?.data?.detail ||
+"Login gagal"
 
 };
 
 
-
 }
-
 
 }

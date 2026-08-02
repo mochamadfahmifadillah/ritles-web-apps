@@ -10,365 +10,487 @@ import {
   logoutUser,
 } from "../services/authService";
 
+
 export const AuthContext = createContext(null);
+
+
 
 export function AuthProvider({ children }) {
 
-  const [user, setUser] = useState(null);
 
-  const [loading, setLoading] = useState(true);
+const [user, setUser] = useState(null);
 
-  // ==========================
-  // Load Session
-  // ==========================
+const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
 
-    try {
 
-      const token = localStorage.getItem(
-        "access_token"
-      );
 
-      const savedUser = localStorage.getItem(
-        "user"
-      );
+// ==========================
+// Load Session
+// ==========================
+useEffect(() => {
 
-      console.log("==================");
-      console.log("LOAD SESSION");
-      console.log("TOKEN :", token);
-      console.log("USER  :", savedUser);
-      console.log("==================");
 
-      if (token && savedUser) {
+try {
 
-        const parsedUser = JSON.parse(
-          savedUser
-        );
 
-        console.log(
-          "PARSED USER :",
-          parsedUser
-        );
+const token = localStorage.getItem(
+  "access_token"
+);
 
-        setUser(
-          parsedUser
-        );
 
-      } else {
+const savedUser = localStorage.getItem(
+  "user"
+);
 
-        localStorage.removeItem(
-          "access_token"
-        );
 
-        localStorage.removeItem(
-          "user"
-        );
 
-      }
+console.log("==================");
+console.log("LOAD SESSION");
+console.log("TOKEN :", token);
+console.log("USER  :", savedUser);
+console.log("==================");
 
-    } catch (error) {
 
-      console.error(
-        "SESSION ERROR :",
-        error
-      );
 
-      localStorage.removeItem(
-        "access_token"
-      );
+if(token && savedUser){
 
-      localStorage.removeItem(
-        "user"
-      );
 
-      setUser(null);
+const parsedUser = JSON.parse(
+  savedUser
+);
 
-    } finally {
 
-      setLoading(false);
 
-    }
+console.log(
+  "PARSED USER :",
+  parsedUser
+);
 
-  }, []);
 
 
+setUser(
+  parsedUser
+);
 
-  // ==========================
-  // Login
-  // ==========================
 
-  const login = async (
-    email,
-    password
-  ) => {
 
-    try {
+}else{
 
-      console.log("==================");
-      console.log("LOGIN START");
-      console.log({
-        email,
-        password,
-      });
-      console.log("==================");
 
-      const response = await loginUser({
+localStorage.removeItem(
+  "access_token"
+);
 
-        email,
 
-        password,
+localStorage.removeItem(
+  "user"
+);
 
-      });
 
-      console.log("==================");
-      console.log("LOGIN SERVICE RETURN");
-      console.log(response);
-      console.log("==================");
+}
 
-      if (!response) {
 
-        console.error(
-          "Response undefined!"
-        );
 
-        return {
+}catch(error){
 
-          success: false,
 
-          message: "Response undefined",
+console.error(
+  "SESSION ERROR:",
+  error
+);
 
-        };
 
-      }
+localStorage.removeItem(
+  "access_token"
+);
 
-      if (!response.success) {
 
-        console.error(
-          "LOGIN FAILED"
-        );
+localStorage.removeItem(
+  "user"
+);
 
-        console.error(
-          response.message
-        );
 
-        return {
+setUser(null);
 
-          success: false,
 
-          message:
-            response.message ??
-            "Login gagal",
 
-        };
+}
+finally{
 
-      }
 
-      const tokenData = response.data;
+setLoading(false);
 
-      console.log("==================");
-      console.log("TOKEN DATA");
-      console.log(tokenData);
-      console.log("==================");
 
-      if (!tokenData) {
+}
 
-        console.error(
-          "TOKEN DATA UNDEFINED"
-        );
 
-        return {
 
-          success: false,
+},[]);
 
-          message:
-            "Token data undefined",
 
-        };
 
-      }
 
-      console.log(
-        "ACCESS TOKEN :",
-        tokenData.access_token
-      );
+// ==========================
+// Login
+// ==========================
+const login = async(
+email,
+password
+)=>{
 
-      console.log(
-        "USER :",
-        tokenData.user
-      );
 
-      localStorage.setItem(
-        "access_token",
-        tokenData.access_token
-      );
+try{
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(
-          tokenData.user
-        )
-      );
 
-      console.log(
-        "LOCAL STORAGE SAVED"
-      );
+console.log("==================");
+console.log("LOGIN START");
+console.log({
+ email,
+ password
+});
+console.log("==================");
 
-      setUser(
-        tokenData.user
-      );
 
-      console.log(
-        "SET USER SUCCESS"
-      );
 
-      return {
+const response = await loginUser({
 
-        success: true,
+email,
 
-        user:
-          tokenData.user,
+password,
 
-      };
+});
 
-    } catch (error) {
 
-      console.log("==================");
-      console.log("LOGIN ERROR");
-      console.log(
-        "STATUS:",
-        error.response?.status
-      );
-      console.log(
-        "DATA:",
-        error.response?.data
-      );
-      console.log(
-        "MESSAGE:",
-        error.message
-      );
-      console.log(error);
-      console.log("==================");
 
-      return {
+console.log("==================");
+console.log(
+"LOGIN SERVICE RETURN"
+);
+console.log(response);
+console.log("==================");
 
-        success: false,
 
-        message:
-          error.response?.data?.detail ??
-          error.message ??
-          "Login gagal",
 
-      };
 
-    }
 
-  };
+if(!response){
 
 
+return {
 
-  // ==========================
-  // Register
-  // ==========================
+success:false,
 
-  const register = async (
-    data
-  ) => {
+message:"Response kosong"
 
-    try {
+};
 
-      const response =
-        await registerUser(data);
 
-      return {
+}
 
-        success: true,
 
-        data:
-          response,
 
-      };
 
-    } catch (error) {
 
-      return {
+if(!response.success){
 
-        success: false,
 
-        message:
-          error.response?.data?.detail ??
-          "Register gagal",
+return {
 
-      };
 
-    }
+success:false,
 
-  };
 
+message:
+response.message || 
+"Login gagal"
 
 
-  // ==========================
-  // Logout
-  // ==========================
+};
 
-  const logout = async () => {
 
-    try {
+}
 
-      await logoutUser();
 
-    } catch (error) {
 
-      console.warn(
-        "LOGOUT ERROR",
-        error
-      );
 
-    } finally {
 
-      localStorage.removeItem(
-        "access_token"
-      );
+// ==========================
+// Ambil Token Data
+// ==========================
 
-      localStorage.removeItem(
-        "user"
-      );
+const tokenData = response.data;
 
-      setUser(null);
 
-    }
 
-  };
+console.log("==================");
+console.log("TOKEN DATA");
+console.log(tokenData);
+console.log("==================");
 
 
 
-  return (
 
-    <AuthContext.Provider
 
-      value={{
+if(!tokenData?.access_token){
 
-        user,
 
-        loading,
+return {
 
-        login,
 
-        register,
+success:false,
 
-        logout,
 
-        isAuthenticated:
-          !!user,
+message:
+"Access token tidak ditemukan"
 
-      }}
 
-    >
+};
 
-      {children}
 
-    </AuthContext.Provider>
+}
 
-  );
+
+
+
+
+// ==========================
+// Save Session
+// ==========================
+
+
+localStorage.setItem(
+
+"access_token",
+
+tokenData.access_token
+
+);
+
+
+
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify(
+tokenData.user
+)
+
+);
+
+
+
+
+setUser(
+tokenData.user
+);
+
+
+
+
+console.log(
+"LOGIN SUCCESS"
+);
+
+
+
+
+
+return {
+
+
+success:true,
+
+
+user:
+tokenData.user
+
+
+};
+
+
+
+
+}catch(error){
+
+
+
+console.log("==================");
+console.log("LOGIN ERROR");
+console.log(
+error
+);
+console.log("==================");
+
+
+
+return {
+
+
+success:false,
+
+
+message:
+error.response?.data?.detail ||
+error.message ||
+"Login gagal"
+
+
+};
+
+
+
+}
+
+
+
+};
+
+
+
+
+// ==========================
+// Register
+// ==========================
+const register = async(data)=>{
+
+
+try{
+
+
+const response =
+await registerUser(data);
+
+
+
+return {
+
+
+success:true,
+
+
+data:response
+
+
+};
+
+
+
+}catch(error){
+
+
+return {
+
+
+success:false,
+
+
+message:
+error.response?.data?.detail ||
+"Register gagal"
+
+
+};
+
+
+
+}
+
+
+
+};
+
+
+
+
+// ==========================
+// Logout
+// ==========================
+const logout = async()=>{
+
+
+try{
+
+
+await logoutUser();
+
+
+
+}catch(error){
+
+
+console.warn(
+"LOGOUT ERROR",
+error
+);
+
+
+
+}
+finally{
+
+
+localStorage.removeItem(
+"access_token"
+);
+
+
+
+localStorage.removeItem(
+"user"
+);
+
+
+
+setUser(null);
+
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+return (
+
+<AuthContext.Provider
+
+value={{
+
+user,
+
+loading,
+
+login,
+
+register,
+
+logout,
+
+isAuthenticated:
+!!user,
+
+}}
+
+>
+
+
+{children}
+
+
+</AuthContext.Provider>
+
+
+);
+
+
 
 }
