@@ -5,55 +5,93 @@ import api from "../api/api";
 // Login
 // ======================
 
-
-// ======================
-// Login
-// ======================
-
-
 export async function loginUser(data) {
 
-  const formData = new URLSearchParams();
+  try {
 
-  formData.append(
-    "username",
-    data.email
-  );
+    const formData = new URLSearchParams();
 
-  formData.append(
-    "password",
-    data.password
-  );
+    formData.append(
+      "username",
+      data.email
+    );
+
+    formData.append(
+      "password",
+      data.password
+    );
 
 
-  const response = await api.post(
-    "/auth/login",
-    formData,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+    console.log("==================");
+    console.log("LOGIN PAYLOAD");
+    console.log({
+      username: data.email,
+      password: data.password,
+    });
+    console.log("==================");
+
+
+    const response = await api.post(
+      "/auth/login",
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+
+    console.log("==================");
+    console.log("LOGIN RESPONSE");
+    console.log(response.data);
+    console.log("==================");
+
+
+    const tokenData = response.data;
+
+
+    if (tokenData.access_token) {
+
+      localStorage.setItem(
+        "access_token",
+        tokenData.access_token
+      );
+
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(tokenData)
+      );
+
     }
-  );
 
 
-  if (response.access_token) {
-
-    localStorage.setItem(
-      "access_token",
-      response.access_token
-    );
+    return {
+      success: true,
+      data: tokenData,
+    };
 
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(response)
-    );
+  } catch (error) {
+
+
+    console.log("==================");
+    console.log("LOGIN ERROR");
+    console.log("STATUS:", error.response?.status);
+    console.log("DATA:", error.response?.data);
+    console.log("MESSAGE:", error.message);
+    console.log("==================");
+
+
+    return {
+      success: false,
+      message:
+        error.response?.data?.detail ||
+        "Login gagal",
+    };
 
   }
-
-
-  return response;
 
 }
 
@@ -63,13 +101,39 @@ export async function loginUser(data) {
 // Register
 // ======================
 
-
 export async function registerUser(data) {
 
-  return await api.post(
-    "/auth/register",
-    data
-  );
+  try {
+
+    const response = await api.post(
+      "/auth/register",
+      data
+    );
+
+
+    return {
+      success: true,
+      data: response.data,
+    };
+
+
+  } catch (error) {
+
+
+    console.log("==================");
+    console.log("REGISTER ERROR");
+    console.log(error.response?.data);
+    console.log("==================");
+
+
+    return {
+      success: false,
+      message:
+        error.response?.data?.detail ||
+        "Register gagal",
+    };
+
+  }
 
 }
 
@@ -79,12 +143,28 @@ export async function registerUser(data) {
 // Get Current User
 // ======================
 
-
 export async function getProfile() {
 
-  return await api.get(
-    "/auth/me"
-  );
+  try {
+
+    const response = await api.get(
+      "/auth/me"
+    );
+
+
+    return response.data;
+
+
+  } catch (error) {
+
+    console.log(
+      "PROFILE ERROR",
+      error
+    );
+
+    throw error;
+
+  }
 
 }
 
@@ -94,7 +174,6 @@ export async function getProfile() {
 // Logout
 // ======================
 
-
 export async function logoutUser() {
 
   try {
@@ -103,6 +182,7 @@ export async function logoutUser() {
       "/auth/logout"
     );
 
+
   } catch (error) {
 
     console.warn(
@@ -110,7 +190,9 @@ export async function logoutUser() {
       error
     );
 
+
   } finally {
+
 
     localStorage.removeItem(
       "access_token"
