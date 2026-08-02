@@ -7,6 +7,7 @@ import {
 import {
   loginUser,
   registerUser,
+  logoutUser,
 } from "../services/authService";
 
 export const AuthContext = createContext(null);
@@ -37,6 +38,8 @@ export function AuthProvider({ children }) {
 
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
+
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -48,10 +51,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       console.log("========== LOGIN ==========");
-      console.log("REQUEST :", {
-        email,
-        password,
-      });
+      console.log("REQUEST :", { email, password });
 
       const response = await loginUser({
         email,
@@ -96,23 +96,13 @@ export function AuthProvider({ children }) {
   // ==========================
   const register = async (data) => {
     try {
-      console.log("========== REGISTER ==========");
-      console.log("REQUEST :", data);
-
       const response = await registerUser(data);
-
-      console.log("REGISTER RESPONSE :", response);
 
       return {
         success: true,
         data: response,
       };
     } catch (error) {
-      console.error("========== REGISTER ERROR ==========");
-      console.error("STATUS :", error.response?.status);
-      console.error("DATA   :", error.response?.data);
-      console.error("ERROR  :", error);
-
       return {
         success: false,
         message:
@@ -125,10 +115,17 @@ export function AuthProvider({ children }) {
   // ==========================
   // Logout
   // ==========================
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user");
-    setUser(null);
+  const logout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.warn(error);
+    } finally {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+
+      setUser(null);
+    }
   };
 
   return (

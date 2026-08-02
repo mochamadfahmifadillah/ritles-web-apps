@@ -3,7 +3,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
-    "https://backend-ritles-4o9y-pi.vercel.app",
+    "https://backend-ritles-gl7b.vercel.app",
 
   timeout: 10000,
 
@@ -12,40 +12,58 @@ const api = axios.create({
   },
 });
 
-// ======================
+// =====================================
 // Request Interceptor
-// ======================
+// =====================================
 
 api.interceptors.request.use(
   (config) => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("access_token");
 
-      if (user?.access_token) {
-        config.headers.Authorization = `Bearer ${user.access_token}`;
-      }
-    } catch (error) {
-      console.error("Invalid user data in localStorage");
-      localStorage.removeItem("user");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
+
+    console.log("REQUEST:", {
+      method: config.method,
+      url: `${config.baseURL}${config.url}`,
+      data: config.data,
+    });
 
     return config;
   },
-  (error) => Promise.reject(error)
+
+  (error) => {
+    console.error("REQUEST ERROR:", error);
+
+    return Promise.reject(error);
+  }
 );
 
-// ======================
+// =====================================
 // Response Interceptor
-// ======================
+// =====================================
 
 api.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    console.log("RESPONSE:", response.data);
+
+    return response.data;
+  },
+
   (error) => {
+    console.error("API ERROR:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    });
+
     if (error.response?.status === 401) {
+      localStorage.removeItem("access_token");
       localStorage.removeItem("user");
 
       if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
+        window.location.replace("/login");
       }
     }
 
