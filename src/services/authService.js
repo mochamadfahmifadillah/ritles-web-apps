@@ -1,7 +1,11 @@
+import api from "../api/api";
+
+
 // ======================
 // Login
 // ======================
 export async function loginUser(data) {
+
 
 try {
 
@@ -57,16 +61,24 @@ console.log(
 // Validasi Token
 // ======================
 
-if(!tokenData?.access_token){
+if(
+  !tokenData ||
+  !tokenData.access_token
+){
+
 
 return {
 
+
 success:false,
+
 
 message:
 "Token tidak ditemukan"
 
+
 };
+
 
 }
 
@@ -86,7 +98,7 @@ tokenData.access_token
 localStorage.setItem(
 "user",
 JSON.stringify(
-tokenData.user
+tokenData.user || {}
 )
 );
 
@@ -98,11 +110,15 @@ tokenData.user
 
 return {
 
+
 success:true,
+
 
 data:tokenData
 
+
 };
+
 
 
 }
@@ -118,15 +134,78 @@ error.response?.data || error.message
 
 return {
 
+
 success:false,
+
 
 message:
 error.response?.data?.detail ||
 "Login gagal"
 
+
 };
 
 
 }
+
+
+}
+
+
+
+
+
+// ======================
+// Register
+// ======================
+export async function registerUser(data){
+
+
+const response = await api.post(
+"/auth/register",
+data
+);
+
+
+return response.data;
+
+
+}
+
+
+
+
+// ======================
+// Get Profile
+// ======================
+export async function getProfile(){
+
+
+const response = await api.get(
+"/auth/me"
+);
+
+
+return response.data;
+
+
+}
+
+
+
+
+// ======================
+// Logout
+// ======================
+export async function logoutUser(){
+
+
+const response = await api.post(
+"/auth/logout"
+);
+
+
+return response.data;
+
 
 }
